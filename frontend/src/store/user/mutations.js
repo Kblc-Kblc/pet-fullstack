@@ -1,3 +1,3 @@
-export function SET_NAME(state, name) {
-    state.name = name
+export const SET_USER = (state, user) => {
+    state.user = user
 }

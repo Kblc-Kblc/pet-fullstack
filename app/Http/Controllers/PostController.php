@@ -65,6 +65,11 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
+        // Проверка, является ли текущий пользователь автором поста
+        if ((int) Auth::id() !== $post->user_id) {
+            return response()->json(['error' => 'У вас нет прав для редактирования этого поста'], 403);
+        }
+
         $post->update($request->all());
         return response()->json($post, 200);
     }
