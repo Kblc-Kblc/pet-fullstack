@@ -1,3 +1,3 @@
 export const SET_USER = (state, user) => {
-    state.user = user
+  state.user = user
 }

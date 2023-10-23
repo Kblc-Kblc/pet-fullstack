@@ -15,8 +15,8 @@ export default route(function ({ store }) {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
     : process.env.VUE_ROUTER_MODE === 'history'
-      ? createWebHistory
-      : createWebHistory
+    ? createWebHistory
+    : createWebHistory
 
   const Router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),

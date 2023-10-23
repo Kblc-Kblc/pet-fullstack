@@ -5,7 +5,7 @@ module.exports = {
   root: true,
 
   parserOptions: {
-    ecmaVersion: 'latest', // Allows for the parsing of modern ECMAScript features
+    ecmaVersion: '2021', // Allows for the parsing of modern ECMAScript features
   },
 
   env: {
@@ -28,11 +28,9 @@ module.exports = {
 
     // https://github.com/prettier/eslint-config-prettier#installation
     // usage with Prettier, provided by 'eslint-config-prettier'.
-
-    'plugin:vue/vue3-recommended',
-    'eslint:recommended',
-    '@vue/eslint-config-prettier',
     'prettier',
+
+    'plugin:prettier/recommended',
   ],
 
   plugins: [
@@ -60,16 +58,8 @@ module.exports = {
 
   // add your custom rules here
   rules: {
-    'prefer-promise-reject-errors': 'off',
-
-    // allow debugger during development only
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-
-    'vue/multi-word-component-names': 'off',
-    'vue/max-attributes-per-line': 'off',
-    'vue/require-default-prop': 'off',
     'prettier/prettier': [
-      'warn',
+      'error',
       {
         semi: false,
         singleQuote: true,
@@ -77,5 +67,10 @@ module.exports = {
         endOfLine: 'auto',
       },
     ],
+
+    'prefer-promise-reject-errors': 'off',
+
+    // allow debugger during development only
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
   },
 }
