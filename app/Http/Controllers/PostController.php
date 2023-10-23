@@ -3,19 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Services\PostService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\UpdatePostRequest;
+
 
 class PostController extends Controller
 {
+    protected $postService;
+
+    public function __construct(PostService $postService)
+    {
+        $this->postService = $postService;
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index()
     {
-        return Post::all();
+        return $this->postService->getAllPosts();
     }
 
     /**
@@ -24,25 +34,16 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function store(Request $request)
     {
-        // Проверяем, есть ли пользователь в системе
-        $user = Auth::user();
-
-        if (!$user) {
-            return response()->json(['error' => 'Неавторизованный пользователь'], 403);
+        $result = $this->postService->createPost($request->all());
+        
+        if (isset($result['error'])) {
+            return response()->json(['error' => $result['error']], $result['code']);
         }
 
-        // Получаем данные из запроса
-        $postData = $request->all();
-    
-        // Добавляем user_id к данным
-        $postData['user_id'] = $user->id;
-
-        // Создаем новый пост
-        $post = Post::create($postData);
-
-        return response()->json($post, 201);
+        return response()->json($result['post'], $result['code']);
     }
 
     /**
@@ -51,9 +52,10 @@ class PostController extends Controller
      * @param  Post $post
      * @return \Illuminate\Http\Response
      */
+
     public function show(Post $post)
     {
-        return $post;
+        return $this->postService->getPost($post);
     }
 
     /**
@@ -63,15 +65,16 @@ class PostController extends Controller
      * @param  Post $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+
+    public function update(UpdatePostRequest $request, Post $post)
     {
-        // Проверка, является ли текущий пользователь автором поста
-        if ((int) Auth::id() !== $post->user_id) {
-            return response()->json(['error' => 'У вас нет прав для редактирования этого поста'], 403);
+        $result = $this->postService->updatePost($post, $request->all());
+
+        if (isset($result['error'])) {
+        return response()->json(['error' => $result['error']], $result['code']);
         }
 
-        $post->update($request->all());
-        return response()->json($post, 200);
+        return response()->json($result['post'], $result['code']);
     }
 
     /**
@@ -80,9 +83,10 @@ class PostController extends Controller
      * @param  Post $post
      * @return \Illuminate\Http\Response
      */
+
     public function destroy(Post $post)
     {
-        $post->delete();
-        return response()->json(null, 204);
+        $result = $this->postService->deletePost($post);
+        return response()->json(null, $result['code']);
     }
 }
