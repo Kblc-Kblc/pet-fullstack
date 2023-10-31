@@ -28,6 +28,12 @@ class PostController extends Controller
         return $this->postService->getAllPosts();
     }
 
+    public function userPosts()
+    {
+        return $this->postService->getPostsByUser();
+    }
+
+
     /**
      * Store a newly created resource in storage.
      *

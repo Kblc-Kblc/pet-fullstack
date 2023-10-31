@@ -14,7 +14,14 @@ const routes = [
       },
       {
         path: '/dashboard',
+        name: 'dashboard',
         component: () => import('src/pages/MainDashboard.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/user-posts',
+        name: 'user-posts',
+        component: () => import('src/pages/UserPosts.vue'),
         meta: { requiresAuth: true },
       },
     ],

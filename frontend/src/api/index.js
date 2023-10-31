@@ -9,9 +9,10 @@ export default {
   },
   blogPost: {
     createPost: (data = {}) => api().post('/auth/posts', data),
-    getPost: (data = {}) => api().get('/auth/posts', data),
+    getAllPosts: (data = {}) => api().get('/auth/posts', data),
     deletePost: (postId) => api().delete(`/auth/posts/${postId}`),
     updatePost: (postId, data) => api().put(`/auth/posts/${postId}`, data),
+    getUserPosts: (data = {}) => api().get('/auth/user-posts', data),
   },
 }
 

@@ -14,35 +14,8 @@
         <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
       </div>
     </q-form>
-    <div class="row card-wrapper">
-      <div v-for="post in posts" :key="post.id" class="card-post">
-        <div v-if="editingPostId !== post.id">
-          <h3>{{ post.title }}</h3>
-          <p>{{ post.body }}</p>
-          <div class="row btn-controls">
-            <q-btn
-              v-if="post.user_id === store.getters['user/user'].data.id"
-              label="Редактировать"
-              color="secondary"
-              @click="startEditing(post.id)"
-            />
-            <q-btn
-              v-if="post.user_id === store.getters['user/user'].data.id"
-              label="Удалить"
-              color="primary"
-              @click="deletePost(post.id)"
-            />
-          </div>
-        </div>
-        <div v-else>
-          <q-input v-model="editingTitle" label="Заголовок" />
-          <q-input v-model="editingBody" label="Содержимое" type="textarea" />
-          <div class="row btn-controls">
-            <q-btn label="Сохранить" @click="saveEdit(post.id)" />
-            <q-btn label="Отмена" @click="cancelEdit" />
-          </div>
-        </div>
-      </div>
+    <div v-for="post in posts" :key="post.id">
+      <post-card :post="post" />
     </div>
   </div>
 </template>
@@ -51,16 +24,17 @@
 import { ref } from 'vue'
 import api from 'src/api/index'
 import { useStore } from 'vuex'
+import PostCard from '@/components/PostCard.vue'
 
 export default {
+  components: {
+    PostCard,
+  },
   setup() {
     const title = ref('')
     const body = ref('')
     const dense = ref(false)
     const posts = ref([])
-    const editingPostId = ref(null)
-    const editingTitle = ref('')
-    const editingBody = ref('')
     const store = useStore()
 
     const onSubmit = () => {
@@ -88,55 +62,13 @@ export default {
 
     const loadPosts = () => {
       api.blogPost
-        .getPost()
+        .getAllPosts()
         .then((response) => {
           posts.value = response.data
         })
         .catch((error) => {
           console.error(error)
         })
-    }
-
-    const deletePost = (postId) => {
-      api.blogPost
-        .deletePost(postId)
-        .then(() => {
-          loadPosts()
-        })
-        .catch((error) => {
-          console.error('Ошибка при удалении поста:', error)
-        })
-    }
-
-    const startEditing = (postId) => {
-      const post = posts.value.find((p) => p.id === postId)
-      if (post) {
-        editingTitle.value = post.title
-        editingBody.value = post.body
-        editingPostId.value = postId
-      }
-    }
-
-    const saveEdit = (postId) => {
-      const updatedData = {
-        title: editingTitle.value,
-        body: editingBody.value,
-      }
-      api.blogPost
-        .updatePost(postId, updatedData)
-        .then(() => {
-          loadPosts()
-          cancelEdit()
-        })
-        .catch((error) => {
-          console.error('Ошибка при редактировании поста:', error)
-        })
-    }
-
-    const cancelEdit = () => {
-      editingPostId.value = null
-      editingTitle.value = ''
-      editingBody.value = ''
     }
 
     const loadUser = () => {
@@ -155,13 +87,6 @@ export default {
       onSubmit,
       onReset,
       posts,
-      deletePost,
-      editingPostId,
-      editingTitle,
-      editingBody,
-      startEditing,
-      saveEdit,
-      cancelEdit,
       store,
     }
   },
@@ -174,13 +99,14 @@ export default {
   margin-top: 20px;
   justify-content: center;
   align-items: center;
-  .card-post {
-    text-align: center;
-    max-width: 300px;
-    width: 100%;
-    background-color: $grey-5;
-    padding: 0px 0px 20px 0px;
-  }
+}
+
+.card-post {
+  text-align: center;
+  max-width: 300px;
+  width: 100%;
+  background-color: $grey-5;
+  padding: 0px 0px 20px 0px;
 }
 
 .btn-controls {

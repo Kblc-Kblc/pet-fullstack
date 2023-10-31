@@ -1,7 +1,7 @@
 <template>
   <q-toolbar>
     <!-- потом пофиксить чтобы дравер открывался\закрывался по нажатию -->
-    <q-btn dense flat round icon="menu" @click="drawerLeft = !drawerLeft" />
+    <q-btn dense flat round icon="menu" />
 
     <q-toolbar-title> Title </q-toolbar-title>
 
@@ -32,7 +32,6 @@ import api from 'src/api/index'
 
 export default {
   setup() {
-    const drawerLeft = ref(false)
     const router = useRouter()
     const error = ref(null)
     const $store = useStore()
@@ -56,7 +55,6 @@ export default {
       handleLogout,
       error,
       isLoggedIn,
-      drawerLeft,
     }
   },
 }

@@ -13,6 +13,13 @@ class PostService
         return Post::all();
     }
 
+    public function getPostsByUser()
+    {
+        $userId = Auth::id();
+        return Post::where('user_id', $userId)->get();
+    }
+
+
     public function createPost(array $data)
     {
         $user = Auth::user();
