@@ -5,6 +5,7 @@ export default {
     login: (data = {}) => api().post('/auth/login', data),
     logout: (data = {}) => api().post('/auth/logout', data),
     register: (data = {}) => api().post('/auth/register', data),
+    update: (data = {}) => api().put('/auth/update', data),
     me: () => api().get('/auth/me'),
   },
   blogPost: {

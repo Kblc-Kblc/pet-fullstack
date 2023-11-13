@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -76,5 +77,26 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
 
         return response()->json(['success' => 'true']);
+    }
+
+
+    /**
+    * Обновить данные пользователя
+    *
+    * @param  UpdateUserRequest  $request
+    * @return JsonResponse
+    */
+    public function update(UpdateUserRequest $request): JsonResponse
+    {
+        $user = $request->user();
+
+        $user->name = $request->get('name');
+        $user->email = $request->get('email');
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->get('password'));
+        }
+        $user->save();
+
+        return response()->json(new UserResource($user));
     }
 }

@@ -21,15 +21,13 @@
         type="password"
         class="q-mb-md"
       />
-      <q-btn label="Изменить данные" color="primary" />
-      <!-- @click.prevent="handleRegister" -->
+      <q-btn label="Изменить данные" color="primary" @click.prevent="handleUpdate" />
     </div>
   </div>
 </template>
 
 <script>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 import api from 'src/api/index'
 
 export default {
@@ -42,10 +40,31 @@ export default {
       password_confirmation: '',
     })
 
-    const router = useRouter()
+    const handleUpdate = async () => {
+      try {
+        if (form.value.password !== form.value.password_confirmation) {
+          throw new Error('Пароли не совпадают')
+        }
+
+        const updateData = {
+          name: form.value.name,
+          email: form.value.email,
+        }
+
+        if (form.value.password) {
+          updateData.password = form.value.password
+          updateData.password_confirmation = form.value.password_confirmation
+        }
+
+        await api.auth.update(updateData)
+      } catch (error) {
+        console.error('Ошибка обновления данных пользователя:', error)
+      }
+    }
 
     return {
       form,
+      handleUpdate,
     }
   },
 }
