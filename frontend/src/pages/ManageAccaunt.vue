@@ -21,7 +21,8 @@
         type="password"
         class="q-mb-md"
       />
-      <q-btn label="Зарегистрироваться" color="primary" @click.prevent="handleRegister" />
+      <q-btn label="Изменить данные" color="primary" />
+      <!-- @click.prevent="handleRegister" -->
     </div>
   </div>
 </template>
@@ -32,7 +33,7 @@ import { useRouter } from 'vue-router'
 import api from 'src/api/index'
 
 export default {
-  name: 'MainRegister',
+  name: 'ManageAccaunt',
   setup() {
     const form = ref({
       name: '',
@@ -43,20 +44,11 @@ export default {
 
     const router = useRouter()
 
-    const handleRegister = async () => {
-      try {
-        const response = await api.auth.register(form.value)
-        console.log(response.data, 'response')
-        router.push('/login')
-      } catch (error) {
-        console.error(error)
-      }
-    }
-
     return {
       form,
-      handleRegister,
     }
   },
 }
 </script>
+
+<style lang="scss" scoped></style>

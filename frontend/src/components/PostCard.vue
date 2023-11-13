@@ -27,6 +27,7 @@ import api from 'src/api/index'
 import { useStore } from 'vuex'
 
 export default {
+  name: 'PostCard',
   props: {
     post: {
       type: Object,

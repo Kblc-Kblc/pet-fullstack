@@ -23,6 +23,7 @@ import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
 export default {
+  name: 'MainLogin',
   setup() {
     const form = ref({
       email: '',

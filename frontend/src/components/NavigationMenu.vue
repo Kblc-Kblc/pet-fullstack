@@ -1,7 +1,6 @@
 <template>
   <q-toolbar>
-    <!-- потом пофиксить чтобы дравер открывался\закрывался по нажатию -->
-    <q-btn dense flat round icon="menu" />
+    <slot name="menu-button"></slot>
 
     <q-toolbar-title> Title </q-toolbar-title>
 
@@ -31,6 +30,7 @@ import { useStore } from 'vuex'
 import api from 'src/api/index'
 
 export default {
+  name: 'NavigationMenu',
   setup() {
     const router = useRouter()
     const error = ref(null)

@@ -1,21 +1,15 @@
 <template>
-  <div class="q-mt-md q-ml-md">
-    <div>
-      <router-link :to="{ name: 'dashboard' }">
-        <a>Все посты</a>
-      </router-link>
-    </div>
-
-    <div>
-      <router-link :to="{ name: 'user-posts' }">
-        <a>мои посты</a>
-      </router-link>
-    </div>
+  <div>
+    <slot name="posts-link"></slot>
+    <slot name="my-posts-link"></slot>
+    <slot name="my-manage-accaunt-link"></slot>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  name: 'DrawerContent',
+}
 </script>
 
 <style></style>

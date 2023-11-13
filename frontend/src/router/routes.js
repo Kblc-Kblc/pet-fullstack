@@ -24,6 +24,12 @@ const routes = [
         component: () => import('src/pages/UserPosts.vue'),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/manage-accaunt',
+        name: 'manage-accaunt',
+        component: () => import('src/pages/ManageAccaunt.vue'),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   // Always leave this as last one,
