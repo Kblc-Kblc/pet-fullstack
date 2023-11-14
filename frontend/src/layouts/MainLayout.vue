@@ -64,9 +64,8 @@
           <q-avatar size="56px" class="q-mb-sm">
             <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
           </q-avatar>
-          <!-- потом убрать как на сранице логина буудет дравер недоступен -->
-          <div class="text-weight-bold">{{ userData ? userData.data.email : '' }}</div>
-          <div>{{ userData ? userData.data.name : '' }}</div>
+          <div class="text-weight-bold">{{ userData ? userData.data.email : 'загружается или нет' }}</div>
+          <div>{{ userData ? userData.data.name : 'загружается или нет' }}</div>
         </div>
       </q-img>
     </q-drawer>

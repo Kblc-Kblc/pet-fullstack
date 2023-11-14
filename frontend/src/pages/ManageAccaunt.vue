@@ -2,7 +2,6 @@
   <div class="flex flex-center q-pa-md bg-light-blue-10">
     <div class="column items-center">
       <q-input v-model="form.name" filled :dark="true" color="white" label="Имя пользователя" class="q-mb-md" />
-      <q-input v-model="form.email" filled :dark="true" color="white" label="Электронная почта" class="q-mb-md" />
       <q-input
         v-model="form.password"
         filled
@@ -28,6 +27,7 @@
 
 <script>
 import { ref } from 'vue'
+import { useQuasar } from 'quasar'
 import api from 'src/api/index'
 
 export default {
@@ -35,12 +35,13 @@ export default {
   setup() {
     const form = ref({
       name: '',
-      email: '',
       password: '',
       password_confirmation: '',
     })
 
-    const handleUpdate = async () => {
+    const $q = useQuasar()
+
+    const handleUpdate = () => {
       try {
         if (form.value.password !== form.value.password_confirmation) {
           throw new Error('Пароли не совпадают')
@@ -48,7 +49,6 @@ export default {
 
         const updateData = {
           name: form.value.name,
-          email: form.value.email,
         }
 
         if (form.value.password) {
@@ -56,9 +56,24 @@ export default {
           updateData.password_confirmation = form.value.password_confirmation
         }
 
-        await api.auth.update(updateData)
+        api.auth
+          .update(updateData)
+          .then(() => {
+            $q.notify({
+              type: 'positive',
+              message: 'Данные пользователя успешно обновлены',
+            })
+
+            form.value.name = ''
+            form.value.password = ''
+            form.value.password_confirmation = ''
+          })
+          .catch((error) => {
+            // Обработка ошибок обновления
+            console.error('Ошибка обновления данных пользователя:', error)
+          })
       } catch (error) {
-        console.error('Ошибка обновления данных пользователя:', error)
+        console.error('Ошибка:', error)
       }
     }
 
