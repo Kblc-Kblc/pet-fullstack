@@ -6,18 +6,26 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
-use App\Models\User;
+use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
+
 
 /**
  * @group Auth
  *
  *  Регистрация и авторизация пользователей
  */
+
 class AuthController extends Controller
 {
+    protected $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
     /**
      * Вход в систему
      *
@@ -27,14 +35,13 @@ class AuthController extends Controller
      *
      * @return JsonResponse
      */
+
     public function login(LoginRequest $request): JsonResponse
     {
-        $user = User::where('email', $request->get('email'))->first();
-        if (!$user || !Hash::check($request->get('password'), $user->password)) {
+        $token = $this->authService->login($request->email, $request->password);
+        if (!$token) {
             return response()->json(['message' => 'Неверный логин или пароль'], 401);
         }
-        $token = $user->createToken('Personal Access Token')->plainTextToken;
-
         return response()->json(compact('token'));
     }
 
@@ -45,40 +52,23 @@ class AuthController extends Controller
      *
      * @return JsonResponse
      */
+
     public function register(RegisterRequest $request): JsonResponse
     {
-        $user = User::create([
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
-            'password' => Hash::make($request->get('password')),
-        ]);
-
-        $token = $user->createToken('Personal Access Token')->plainTextToken;
-
+        $token = $this->authService->register($request->validated());
         return response()->json(compact('token'));
     }
 
-
-    /**
-     * Me
-     *
-     * Получить информацию о текущем авторизованном пользователе.
-     * <aside class="notice">Для определения пользователя используется текущий bearer-токен</aside>
-     */
     public function me(Request $request): UserResource
     {
-        $user = $request->user();
-        return new UserResource($user);
+        return new UserResource($request->user());
     }
 
     public function logout(Request $request)
     {
-        $request->user()->tokens()->delete();
-        $request->user()->currentAccessToken()->delete();
-
+        $this->authService->logout($request->user());
         return response()->json(['success' => 'true']);
     }
-
 
     /**
     * Обновить данные пользователя
@@ -86,19 +76,11 @@ class AuthController extends Controller
     * @param  UpdateUserRequest  $request
     * @return JsonResponse
     */
+
     public function update(UpdateUserRequest $request): JsonResponse
     {
-        $user = $request->user();
-
-        $user->name = $request->get('name');
-        if ($request->has('email')) {
-            $user->email = $request->get('email');
-        }
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->get('password'));
-        }
-        $user->save();
-
+        $user = $this->authService->update($request->user(), $request->validated());
         return response()->json(new UserResource($user));
     }
 }
+
